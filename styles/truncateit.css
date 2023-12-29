@@ -1,0 +1,73 @@
+/* line 1, ../sass/truncatit.scss */
+.truncateit__wrap {
+  position: relative;
+  transition-property: height;
+  transition-timing-function: ease;
+  overflow: hidden;
+  width: 100%; }
+
+/* line 8, ../sass/truncatit.scss */
+.truncateit__buttons {
+  display: inline-block; }
+
+/* line 12, ../sass/truncatit.scss */
+.truncateit__button {
+  cursor: pointer;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; }
+
+/* line 20, ../sass/truncatit.scss */
+.truncateit__button-hide {
+  display: none; }
+
+/* line 24, ../sass/truncatit.scss */
+.truncateit__button-show,
+.truncateit__button-hide {
+  color: #ccc; }
+  /* line 28, ../sass/truncatit.scss */
+  .no-touch .truncateit__button-show:hover, .no-touch
+  .truncateit__button-hide:hover {
+    color: #000; }
+
+/* line 34, ../sass/truncatit.scss */
+.truncateit__wrap--open .truncateit__preview,
+.truncateit__wrap--open .truncateit__button-show {
+  display: none; }
+/* line 39, ../sass/truncatit.scss */
+.truncateit__wrap--open .truncateit__button-hide {
+  display: inline; }
+/* line 44, ../sass/truncatit.scss */
+.truncateit__wrap--open.truncateit--method-2 .truncateit__content {
+  opacity: 1; }
+/* line 48, ../sass/truncatit.scss */
+.truncateit__wrap--open.truncateit--method-2 .truncateit__preview {
+  display: none; }
+
+/* line 55, ../sass/truncatit.scss */
+.truncateit__wrap--disable .truncateit__buttons {
+  display: none; }
+/* line 59, ../sass/truncatit.scss */
+.truncateit__wrap--disable .truncateit__wrap {
+  height: auto; }
+/* line 64, ../sass/truncatit.scss */
+.truncateit__wrap--disable.truncateit--method-2 .truncateit__content {
+  opacity: 1; }
+/* line 68, ../sass/truncatit.scss */
+.truncateit__wrap--disable.truncateit--method-2 .truncateit__preview {
+  display: none; }
+
+/* line 76, ../sass/truncatit.scss */
+.truncateit--method-2 .truncateit__content {
+  opacity: 0; }
+/* line 80, ../sass/truncatit.scss */
+.truncateit--method-2 .truncateit__preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden; }
