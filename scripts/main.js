@@ -32,4 +32,8 @@ $(function() {
         },
     })
 
+    setTimeout(function(){
+        $('.js-truncate-2').truncateit('update')
+    }, 2000)
+
 })

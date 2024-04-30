@@ -1,12 +1,12 @@
 /*
- * truncateIt 0.8
+ * truncateIt 0.9
  *
  * Copyright Christin Bombelka
- * 2023-12-29
+ * 2024-04-29
  * https://github.com/ChristinBombelka/
  */
 
-;(function($, window, document, undefined){
+; (function ($, window, document, undefined) {
 	var pluginName = 'truncateIt',
 		defaults = {
 			duration: 250,
@@ -20,71 +20,76 @@
 			afterInit: $.noop,
 			beforeOpen: $.noop,
 			afterOpen: $.noop,
-            afterClose: $.noop,
-            update: $.noop,
+			beforeClose: $.noop,
+			afterClose: $.noop,
+			update: $.noop,
 		}
 
-	function runTruncate(){
-		$('.truncateit').each(function(){
+	function runTruncate() {
+		$('.truncateit').each(function () {
 
 			var container = $(this),
 				wrap = container.find('.truncateit__wrap'),
 				content = container.find('.truncateit__content');
 
-			container.removeClass('truncateit__wrap--disable');
+			container.removeClass('truncateit--disable');
 
-            if(container.hasClass('truncateit--method-2')){
-                var lineHeight = parseFloat(content.css('line-height'));
-                wrap.data('heightclose', lineHeight * wrap.data('lines'));
-            }
+			if (container.hasClass('truncateit--method-2')) {
+				var lineHeight = parseFloat(content.css('line-height'));
+				wrap.data('heightclose', lineHeight * wrap.data('lines'));
+			}
 
-            if(wrap.data('heightclose') >= content.height()){
-                container.addClass('truncateit__wrap--disable');
+			if (wrap.data('heightclose') >= content.height()) {
+				container.addClass('truncateit--disable');
 
-                wrap.css('height', '');
+				wrap.css('height', '');
 
-            }else{
-                wrap.data('heightopen', content.height());
+			} else {
+				wrap.data('heightopen', content.height());
 
-                if(container.hasClass('truncateit__wrap--open')){
-                    wrap.css('height', wrap.data('heightopen'));
-                }else{
-                    wrap.css('height', wrap.data('heightclose'));
-                }
-            }
+				if (container.hasClass('truncateit--open')) {
+					wrap.css('height', wrap.data('heightopen'));
+				} else {
+					wrap.css('height', wrap.data('heightclose'));
+				}
+			}
 		});
 	}
 	runTruncate();
 
-	function runClose(container, options){
+	function runClose(container, options) {
 		var wrap = container.find('.truncateit__wrap');
 
-        wrap.css('height', wrap.data('heightopen') + 'px');
+		if ($.isFunction(options.beforeClose)) {
+			options.beforeClose.call(this, container, wrap);
+		}
 
-        setTimeout(function(){
-            wrap.css('height', wrap.data('heightclose') + 'px');
+		wrap.css('height', wrap.data('heightopen') + 'px');
 
-            setTimeout(function(){
+		setTimeout(function () {
+			wrap.css('height', wrap.data('heightclose') + 'px');
 
-				container.removeClass('truncateit__wrap--open');
+			setTimeout(function () {
 
-                if ($.isFunction(options.afterClose)) {
-                    options.afterClose.call(this, container, wrap);
-                }
-            }, options.duration);
-        })
+				container.removeClass('truncateit--open');
+
+				if ($.isFunction(options.afterClose)) {
+					options.afterClose.call(this, container, wrap);
+				}
+			}, options.duration);
+		})
 	}
 
-	function runOpen(container, options){
+	function runOpen(container, options) {
 		var wrap = container.find('.truncateit__wrap');
 
 		wrap.css('height', wrap.data('heightopen') + 'px');
 
-		container.addClass('truncateit__wrap--open');
+		container.addClass('truncateit--open');
 
-		setTimeout(function(){
+		setTimeout(function () {
 
-            wrap.css('height', '');
+			wrap.css('height', '');
 
 			if ($.isFunction(options.afterOpen)) {
 				options.afterOpen.call(this, container, wrap);
@@ -92,87 +97,87 @@
 		}, options.duration);
 	}
 
-	function Plugin( element, options ) {
-        this.options = $.extend( {}, defaults, options , $(element).data());
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.element = element;
-        this.init(this.options);
-        this.attachEvents(this.element, this.options);
-    }
+	function Plugin(element, options) {
+		this.options = $.extend({}, defaults, options, $(element).data());
+		this._defaults = defaults;
+		this._name = pluginName;
+		this.element = element;
+		this.init(this.options);
+		this.attachEvents(this.element, this.options);
+	}
 
-    Plugin.prototype = {
-		init: function(options){
+	Plugin.prototype = {
+		init: function (options) {
 			var item = $(this.element);
-            var labelopen = options.labelopen;
-            var labelclose = options.labelclose;
+			var labelopen = options.labelopen;
+			var labelclose = options.labelclose;
 
-            if(item.data('labelopen')){
-                labelopen = item.data('labelopen')
-            }
+			if (item.data('labelopen')) {
+				labelopen = item.data('labelopen')
+			}
 
-            if(item.data('labelclose')){
-                labelclose = item.data('labelclose')
-            }
+			if (item.data('labelclose')) {
+				labelclose = item.data('labelclose')
+			}
 
-            var buttonShow = $('<span class="truncateit__button truncateit__button-show">'+labelopen+'</span>');
-			var butttonHide = $('<span class="truncateit__button truncateit__button-hide">'+labelclose+'</span>');
-            var buttons = $('<span class="truncateit__buttons"></span>');
+			var buttonShow = $('<span class="truncateit__button truncateit__button-show">' + labelopen + '</span>');
+			var butttonHide = $('<span class="truncateit__button truncateit__button-hide">' + labelclose + '</span>');
+			var buttons = $('<span class="truncateit__buttons"></span>');
 
 			item.addClass('truncateit__wrap');
 
-				item.wrap('<div class="truncateit"></div>').data(options);
+			item.wrap('<div class="truncateit"></div>').data(options);
 
-				item.wrapInner('<div class="truncateit__content">');
+			item.wrapInner('<div class="truncateit__content">');
 
-				if(options.onlytruncate){
-					buttons.addClass('truncateit__buttons--disabled');
-				}
+			if (options.onlytruncate) {
+				buttons.addClass('truncateit__buttons--disabled');
+			}
 
-                if(item.data('heightclose')){
-                    item.data('heightclose', item.data('heightclose'));
-                }else{
-                    item.data('heightclose', options.heightclose);
-                }
+			if (item.data('heightclose')) {
+				item.data('heightclose', item.data('heightclose'));
+			} else {
+				item.data('heightclose', options.heightclose);
+			}
 
-				item.css({
-					'transition-duration': options.duration + 'ms',
+			item.css({
+				'transition-duration': options.duration + 'ms',
+			});
+
+			butttonHide.appendTo(buttons);
+			buttonShow.appendTo(buttons);
+
+			buttons.insertAfter(item);
+
+			if (options.method == 2) {
+				var content = item.find('.truncateit__content'),
+					previewText = content.clone();
+
+				item.closest('.truncateit').addClass('truncateit--method-2');
+
+				previewText
+					.removeClass('truncateit__content')
+					.addClass('truncateit__preview')
+					.appendTo(item);
+
+				previewText.css({
+					'-webkit-line-clamp': options.lines.toString(),
 				});
 
-				butttonHide.appendTo(buttons);
-				buttonShow.appendTo(buttons);
+				item.data('lines', options.lines);
+			}
 
-				buttons.insertAfter(item);
-
-				if(options.method == 2){
-					var content = item.find('.truncateit__content'),
-						previewText = content.clone();
-
-					item.closest('.truncateit').addClass('truncateit--method-2');
-
-					previewText
-						.removeClass('truncateit__content')
-						.addClass('truncateit__preview')
-						.appendTo(item);
-
-					previewText.css({
-						'-webkit-line-clamp': options.lines.toString(),
-					});
-
-					item.data('lines', options.lines);
-				}
-
-                if ($.isFunction(options.afterInit)) {
-                    options.afterInit.call(this, item);
-                }
+			if ($.isFunction(options.afterInit)) {
+				options.afterInit.call(this, item);
+			}
 
 			runTruncate();
 
 		},
-		attachEvents: function(el, options) {
+		attachEvents: function (el, options) {
 			var container = $(el).closest('.truncateit');
 
-			container.on('click', '.truncateit__button', function(){
+			container.on('click', '.truncateit__button', function () {
 				var item = $(this),
 					container = item.closest('.truncateit');
 
@@ -180,18 +185,18 @@
 					options.beforeOpen.call(this, container, item);
 				}
 
-				if(item.hasClass('truncateit__buttons--disabled')){
+				if (item.hasClass('truncateit__buttons--disabled')) {
 					return;
 				}
 
-				if(container.hasClass('truncateit__wrap--open')){
+				if (container.hasClass('truncateit--open')) {
 					runClose(container, options);
-				}else{
+				} else {
 
-					if(options.autoCloseInContainer){
-						var otherOpen = $(options.autoCloseInContainer).find('.truncateit__wrap--open');
+					if (options.autoCloseInContainer) {
+						var otherOpen = $(options.autoCloseInContainer).find('.truncateit--open');
 
-						if(otherOpen.length){
+						if (otherOpen.length) {
 							runClose(otherOpen);
 						}
 					}
@@ -201,7 +206,7 @@
 			});
 
 			if (!$(document).data('truncateit-initialized')) {
-				$(window).on('resize', function(){
+				$(window).on('resize', function () {
 					runTruncate();
 				});
 
@@ -210,34 +215,34 @@
 		}
 	}
 
-	$.fn.truncateit = function(options){
+	$.fn.truncateit = function (options) {
 
-        if(options == 'update'){
-            runTruncate();
-            return;
-        }
+		if (options == 'update') {
+			runTruncate();
+			return;
+		}
 
-		return this.each(function(){
+		return this.each(function () {
 			var el = $(this);
 
-			if(typeof options === 'undefined'){
+			if (typeof options === 'undefined') {
 				options = {}
 			}
 
-			if(el.data('onlytruncate')){
+			if (el.data('onlytruncate')) {
 				options.onlytruncate = el.data('onlytruncate');
 			}
 
-			if(el.data('truncatelines')){
+			if (el.data('truncatelines')) {
 				options.lines = el.data('truncatelines');
 			}
 
 			if (!$.data(this, 'plugin_' + pluginName)) {
-                $.data(this, 'plugin_' + pluginName, new Plugin(this, options));
-            }else if ($.isFunction(Plugin.prototype[options])) {
-                $.data(this, 'plugin_' + pluginName)[options]();
-            }
+				$.data(this, 'plugin_' + pluginName, new Plugin(this, options));
+			} else if ($.isFunction(Plugin.prototype[options])) {
+				$.data(this, 'plugin_' + pluginName)[options]();
+			}
 		});
 
 	}
-})( jQuery, window, document );
+})(jQuery, window, document);
